@@ -1,0 +1,48 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: challs
+  name: babyheap
+  labels:
+    chall: babyheap
+    category: pwn
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      chall: babyheap
+  template:
+    metadata:
+      labels:
+        chall: babyheap
+        category: pwn
+    spec:
+      containers:
+      - name: babyheap
+        image: localhost:5000/babyheap:latest
+        imagePullPolicy: Always
+        ports:
+        - name: socket
+          containerPort: 2000
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: challs
+  name: babyheap
+  labels:
+    chall: babyheap
+    category: pwn
+spec:
+  type: NodePort
+  selector:
+    chall: babyheap
+  ports:  
+  - name: socket
+    port: 2000
+    nodePort: 31005
+    targetPort: 2000
+    protocol: TCP
+
